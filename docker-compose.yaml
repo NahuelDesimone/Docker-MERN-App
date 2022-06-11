@@ -3,6 +3,7 @@ services:
     image: 'mongo'
     volumes:
       - data:/data/db
+    container_name: mongodb
     #environment:
       #- MONGO_INITDB_ROOT_USERNAME=max
       #- MONGO_INITDB_ROOT_PASSWORD=secret 
@@ -17,12 +18,23 @@ services:
       - logs:/app/logs
       - ./backend:/app #se utiliza ruta relativa para montar toda la carpeta "backend" en la ruta app del contenedor
       - /app/node_modules
+    container_name: backend
     env_file:
       - ./env/mongo.env
     depends_on:
       - mongodb
 
-  #frontend:
+  frontend:
+    build: ./frontend
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./frontend/src:/app/src
+    container_name: frontend
+    stdin_open: true
+    tty: true
+    depends_on:
+      - backend
 
 volumes:
   data:
